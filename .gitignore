@@ -1,0 +1,11 @@
+# Node
+node_modules/
+npm-debug.log
+.env
+.env.local
+
+# Server
+dummy-server/node_modules/
+
+# Mac
+.DS_Store
