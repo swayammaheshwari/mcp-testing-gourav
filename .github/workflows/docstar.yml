@@ -1,0 +1,94 @@
+name: Sync Docs to DocStar
+    
+    on:
+      push:
+        paths:
+          - 'docs/**'
+          - 'docstar.json'
+    
+    jobs:
+      sync:
+        runs-on: ubuntu-latest
+    
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
+    
+          - name: Send changed files to DocStar
+            env:
+              DOCSTAR_API_KEY: ${{ 'hm_6f6fc8eb899012974613591c2d8ac3880792dd99a06177607308d44d7c560ff9' }}
+              DOCSTAR_COLLECTION_ID: NnbiIpqHe1X7
+            run: |
+              set -e
+    
+              echo "Preparing changed files with content..."
+    
+              if [ -z "${{ github.event.before }}" ] || \
+                 [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+                echo "First commit — marking all docs as Added"
+                CHANGED=$(git ls-files docs | awk '{print "A\t"$0}')
+              else
+                CHANGED=$(git diff --name-status "${{ github.event.before }}" "${{ github.sha }}" \
+                  | grep -E '^[A-Z]\s+docs/' || true)
+              fi
+    
+              echo "Changed files:"
+              echo "$CHANGED"
+    
+              if [ -z "$CHANGED" ]; then
+                echo "No docs changes detected."
+                exit 0
+              fi
+    
+              FILES_JSON="[]"
+    
+              while IFS=$'\t' read -r STATUS FILE; do
+                [ -z "$FILE" ] && continue
+    
+                if [ "$STATUS" = "D" ]; then
+                  FILE_OBJ=$(jq -n \
+                    --arg path "$FILE" \
+                    --arg status "$STATUS" \
+                    '{
+                      path: $path,
+                      status: $status,
+                      content: null
+                    }')
+                else
+                  CONTENT=$(jq -Rs . < "$FILE")
+    
+                  FILE_OBJ=$(jq -n \
+                    --arg path "$FILE" \
+                    --arg status "$STATUS" \
+                    --argjson content "$CONTENT" \
+                    '{
+                      path: $path,
+                      status: $status,
+                      content: $content
+                    }')
+                fi
+    
+                FILES_JSON=$(echo "$FILES_JSON" | jq ". + [$FILE_OBJ]")
+    
+              done <<< "$CHANGED"
+    
+              echo "Final Payload:"
+              echo "$FILES_JSON"
+    
+              RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST https://dev-api.docstar.io/import/github \
+                -H "Authorization: Bearer $DOCSTAR_API_KEY" \
+                -H "Content-Type: application/json" \
+                -d "{
+                      \"repository\": \"${{ github.repository }}\",
+                      \"branch\": \"${{ github.ref_name }}\",
+                      \"commit\": \"${{ github.sha }}\",
+                      \"collectionId\": \"$DOCSTAR_COLLECTION_ID\",
+                      \"files\": $FILES_JSON
+                    }")
+    
+              echo "$RESPONSE"
+    
+              echo "DocStar sync completed."
+    
