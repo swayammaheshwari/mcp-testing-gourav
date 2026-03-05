@@ -10,7 +10,6 @@ tags:
   - "PUT"
 ---
 
-```bash
 curl --request PUT \
   --url {{BASE_URL}}/api/users/:id \
   --header 'Content-Type: application/json' \
@@ -18,4 +17,3 @@ curl --request PUT \
     "name": "Alice Wonderland",
     "role": "superadmin"
 }'
-```

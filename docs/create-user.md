@@ -10,7 +10,6 @@ tags:
   - "POST"
 ---
 
-```bash
 curl --request POST \
   --url {{BASE_URL}}/api/users \
   --header 'Content-Type: application/json' \
@@ -19,4 +18,3 @@ curl --request POST \
     "role": "editor",
     "active": true
 }'
-```

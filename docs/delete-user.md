@@ -10,8 +10,6 @@ tags:
   - "DELETE"
 ---
 
-```bash
 curl --request DELETE \
   --url {{BASE_URL}}/api/users/:id \
   --header 'Authorization: Bearer super-secret-token'
-```

@@ -10,7 +10,5 @@ tags:
   - "GET"
 ---
 
-```bash
 curl --request GET \
   --url {{BASE_URL}}/api/users/:id
-```
