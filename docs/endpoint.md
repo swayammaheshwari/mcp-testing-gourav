@@ -9,7 +9,7 @@ tags:
 ---
 
 curl --request POST \
-  --url https://api.example.com/v1/users \
+  --url https://api.example.com/v2/users \
   --header 'Authorization: Bearer YOUR_TOKEN' \
   --header 'Content-Type: application/json' \
   --data '{
