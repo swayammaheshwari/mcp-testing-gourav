@@ -1,7 +1,7 @@
 ---
 name: Page Testing Request
 about: Request testing for a new or modified page
-title: 'page testing title'
+title: 'elephant'
 tags: 'testing, page'
 type: 'page'
 ---
@@ -34,3 +34,4 @@ type: 'page'
 
 ## 🔗 Additional Context
 - Provide any other context, UTM parameters mapped, related issues, etc.
+- Elephants are the largest land animals on Earth. They are known for their long trunks, large ears, and tusks. There are three species of elephant: African bush elephant, African forest elephant, and Asian elephant.
