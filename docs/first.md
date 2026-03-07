@@ -6,7 +6,7 @@ tags: 'testing, page'
 type: 'page'
 ---
 
-## 📄 Page Details
+## 📄 Page Details changes
 - **Page Name / Title**:
 - **Page Path / URL Route**:
 - **Collection ID (if applicable)**:
